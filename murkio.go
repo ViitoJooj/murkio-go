@@ -363,7 +363,7 @@ func (c *Client) Verify(ctx context.Context, token string) (*Session, error) {
 	if err := decodeSegment(parts[1], &claims); err != nil {
 		return nil, ErrMalformedToken
 	}
-	if claims.Issuer != bootstrap.Issuer || claims.Audience != bootstrap.ApplicationID || claims.Subject == "" || claims.SessionID == "" {
+	if claims.Issuer != bootstrap.Issuer || claims.Audience != bootstrap.ApplicationID || claims.Subject == "" || claims.SessionID == "" || claims.ExpiresAt == 0 {
 		return nil, ErrInvalidToken
 	}
 	if time.Now().Unix() >= claims.ExpiresAt {
