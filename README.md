@@ -1,14 +1,17 @@
 # Murkio identity for Go
 
-`github.com/ViitoJooj/auth/libs/external/go` (package `murkio`): tells who is behind
+`github.com/ViitoJooj/murkio-go` (package `murkio`): tells who is behind
 each request and writes the login components into the pages you render. Standard
 library only, Go 1.22+. The only setting is your publishable key.
 
 ```sh
+go get github.com/ViitoJooj/murkio-go
 MURKIO_PUBLISHABLE_KEY=pk_...    # MURKIO_API_URL is optional
 ```
 
 ```go
+import murkio "github.com/ViitoJooj/murkio-go"
+
 m, err := murkio.FromEnv()
 if err != nil {
 	log.Fatal(err)
@@ -62,3 +65,13 @@ and read `result.Session`, or wrap the handler with `m.Middleware(...)`.
   `MURKIO_SCRIPT_URL` and `MURKIO_SCRIPT_INTEGRITY`.
 - The backend never signs anyone in or refreshes tokens: the browser does, because the
   API rate-limits per user IP.
+
+## Developing
+
+This repository is a git submodule of the Murkio identity service
+(`libs/external/go`). The tests run from that checkout: they read the token vectors
+every Murkio server SDK shares (`libs/spec/server`).
+
+```sh
+go test -race ./...
+```

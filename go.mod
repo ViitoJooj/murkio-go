@@ -1,3 +1,3 @@
-module github.com/ViitoJooj/auth/libs/external/go
+module github.com/ViitoJooj/murkio-go
 
 go 1.22
