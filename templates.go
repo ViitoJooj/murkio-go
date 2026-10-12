@@ -48,6 +48,7 @@ func (c *Client) scriptTag(nonce string, options HeadOptions) template.HTML {
 	if integrity != "" {
 		crossorigin = "anonymous"
 	}
+	// murkio:allow dangerous-sink every attribute value goes through html.EscapeString
 	return template.HTML("<script" + attributes(
 		"src", c.scriptSource(),
 		"integrity", integrity,
@@ -58,7 +59,7 @@ func (c *Client) scriptTag(nonce string, options HeadOptions) template.HTML {
 		"data-murkio-locale", options.Locale,
 		"data-murkio-after-login", options.AfterLogin,
 		"data-murkio-oauth-redirect", options.OAuthRedirectURL,
-	) + "></script>") // #nosec G203 -- every attribute value goes through html.EscapeString
+	) + "></script>") // #nosec G203 -- escaped, see the comment above
 }
 
 // Head returns the <script> that loads the browser SDK, pinned with its SRI
@@ -81,7 +82,8 @@ func (c *Client) BootstrapScript(ctx context.Context) (template.HTML, error) {
 		return "", err
 	}
 	stamp := strconv.FormatInt(time.Now().UnixMilli(), 10)
-	return template.HTML(`<script type="application/json" id="murkio-bootstrap" data-generated-at="` + stamp + `">` + string(raw) + `</script>`), nil // #nosec G203 -- json.Marshal escapes <, > and & as \u sequences
+	// murkio:allow dangerous-sink json.Marshal escapes <, > and & as \u sequences
+	return template.HTML(`<script type="application/json" id="murkio-bootstrap" data-generated-at="` + stamp + `">` + string(raw) + `</script>`), nil // #nosec G203 -- escaped, see the comment above
 }
 
 // Field configures a standalone component.
@@ -93,7 +95,8 @@ type Field struct {
 }
 
 func tag(name string, field Field) template.HTML {
-	return template.HTML("<" + name + attributes("class", field.Class, "form", field.Form, "placeholder", field.Placeholder, "label", field.Label) + "></" + name + ">") // #nosec G203 -- every attribute value goes through html.EscapeString
+	// murkio:allow dangerous-sink every attribute value goes through html.EscapeString
+	return template.HTML("<" + name + attributes("class", field.Class, "form", field.Form, "placeholder", field.Placeholder, "label", field.Label) + "></" + name + ">") // #nosec G203 -- escaped, see the comment above
 }
 
 // Canvas configures <murkio-identity-canvas>.
@@ -110,7 +113,8 @@ func CanvasTag(canvas Canvas) template.HTML {
 	if canvas.LightDOM {
 		light = " light-dom"
 	}
-	return template.HTML("<murkio-identity-canvas" + attributes("screen", canvas.Screen, "class", canvas.Class, "locale", canvas.Locale) + light + "></murkio-identity-canvas>") // #nosec G203 -- every attribute value goes through html.EscapeString
+	// murkio:allow dangerous-sink every attribute value goes through html.EscapeString
+	return template.HTML("<murkio-identity-canvas" + attributes("screen", canvas.Screen, "class", canvas.Class, "locale", canvas.Locale) + light + "></murkio-identity-canvas>") // #nosec G203 -- escaped, see the comment above
 }
 
 // TemplateFuncs returns the functions for html/template:
