@@ -68,10 +68,24 @@ and read `result.Session`, or wrap the handler with `m.Middleware(...)`.
 
 ## Developing
 
-This repository is a git submodule of the Murkio identity service
-(`libs/external/go`). The tests run from that checkout: they read the token vectors
-every Murkio server SDK shares (`libs/spec/server`).
-
 ```sh
 go test -race ./...
 ```
+
+The tests read the token vectors every Murkio server SDK shares. That copy (`spec/`) and
+the checks in `infra/pipeline/` are kept in the Murkio identity service and synced from
+there, so they are not edited here.
+
+Every pull request runs the workflows in `.github/workflows`. The same checks, locally:
+
+| Workflow | What it runs |
+| --- | --- |
+| Build | `go build ./...` on Go 1.22 and on the current release, `go mod tidy -diff` |
+| Format | `gofmt -l .` |
+| Lint | `go vet ./...`, `staticcheck -checks all,-ST1000 ./...` |
+| Tests | `go test -race ./...` on Go 1.22 and on the current release |
+| Quality & Governance Checks | `for check in infra/pipeline/*.py; do python3 "$check"; done` |
+| Security | `gosec ./...`, `govulncheck ./...`, `gitleaks git .`, `zizmor .` |
+| CodeQL, Dependency Review | run by GitHub on the pull request |
+
+Security reports: see [SECURITY.md](SECURITY.md).
