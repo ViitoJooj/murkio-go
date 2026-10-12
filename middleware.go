@@ -159,9 +159,11 @@ func (c *Client) serveHandshake(w http.ResponseWriter, r *http.Request) {
 		apiOrigin = api.Scheme + "://" + api.Host
 	}
 
-	http.SetCookie(w, &http.Cookie{
+	// Only this middleware reads the guard, so scripts cannot. It is Secure
+	// whenever the request is: a plain-HTTP site in development still needs it.
+	http.SetCookie(w, &http.Cookie{ // #nosec G124 -- Secure follows the request scheme, see above
 		Name: handshakeGuard, Value: "1", Path: "/", MaxAge: 30,
-		SameSite: http.SameSiteLaxMode, Secure: requestScheme(r) == "https",
+		HttpOnly: true, SameSite: http.SameSiteLaxMode, Secure: requestScheme(r) == "https",
 	})
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Header().Set("Cache-Control", "no-store")

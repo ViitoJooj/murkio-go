@@ -264,8 +264,12 @@ func TestHandshake(t *testing.T) {
 	if rec.Code != http.StatusOK || !strings.Contains(rec.Body.String(), `nonce="`+nonce+`"`) || !strings.Contains(rec.Body.String(), `data-murkio-key="`+testKey+`"`) {
 		t.Fatalf("expected the handshake page, got %d %s", rec.Code, rec.Body)
 	}
-	if !strings.Contains(rec.Header().Get("Set-Cookie"), "murkio_handshake=1") || rec.Header().Get("Cache-Control") != "no-store" {
+	guard := rec.Header().Get("Set-Cookie")
+	if !strings.Contains(guard, "murkio_handshake=1") || rec.Header().Get("Cache-Control") != "no-store" {
 		t.Fatalf("unexpected handshake headers %v", rec.Header())
+	}
+	if !strings.Contains(guard, "HttpOnly") || !strings.Contains(guard, "SameSite=Lax") {
+		t.Fatalf("the guard cookie must be out of reach of scripts, got %q", guard)
 	}
 
 	headers["Cookie"] += "; murkio_handshake=1"

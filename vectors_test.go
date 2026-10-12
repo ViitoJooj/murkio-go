@@ -27,10 +27,10 @@ type vectors struct {
 	CookieHash map[string]string `json:"cookie_hash"`
 }
 
-// The vectors in libs/spec/server are shared by every server SDK: the same
-// tokens must get the same verdict in Go, Node, Python, PHP, Ruby and Java.
+// The vectors in spec/server are shared by every server SDK: the same tokens
+// must get the same verdict in Go, Node, Python, PHP, Ruby and Java.
 func TestSharedVectors(t *testing.T) {
-	raw, err := os.ReadFile("../../spec/server/vectors.json")
+	raw, err := os.ReadFile("spec/server/vectors.json")
 	if err != nil {
 		t.Fatal(err)
 	}
