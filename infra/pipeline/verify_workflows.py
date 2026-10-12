@@ -5,8 +5,8 @@ the credentials that publish the package. This check fails when a workflow
 
 - does not declare its permissions (the default token can write);
 - runs on `pull_request_target` (a fork's code with this repository's token);
-- uses a third-party action that is not pinned to a commit (a moved tag would
-  run new code here; actions/* and github/* may use a version tag);
+- uses an action that is not pinned to a commit (a tag can be moved to new
+  code; the version goes in a comment, which Dependabot keeps up to date);
 - puts text an outsider controls (a title, a branch name) straight into a
   shell command.
 """
@@ -18,7 +18,6 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent / "lib"))
 import sdk  # noqa: E402
 
-FIRST_PARTY = {"actions", "github"}
 USES = re.compile(r"^\s*(?:-\s*)?uses:\s*([^\s#]+)")
 COMMIT = re.compile(r"^[0-9a-f]{40}$")
 UNTRUSTED = re.compile(r"\$\{\{\s*(?:github\.event\.|github\.head_ref|github\.ref_name)")
@@ -41,7 +40,7 @@ def check(path: Path) -> list[str]:
         uses = USES.match(line)
         if uses and not uses.group(1).startswith(("./", "docker://")):
             action, _, ref = uses.group(1).partition("@")
-            if action.split("/")[0] not in FIRST_PARTY and not COMMIT.match(ref):
+            if not COMMIT.match(ref):
                 violations.append(f"Line {number}: `{action}@{ref}` is not pinned to a commit")
 
         # A `run:` block lasts while the lines stay indented deeper than its key.

@@ -85,7 +85,7 @@ Every pull request runs the workflows in `.github/workflows`. The same checks, l
 | Lint | `go vet ./...`, `staticcheck -checks all,-ST1000 ./...` |
 | Tests | `go test -race ./...` on Go 1.22 and on the current release |
 | Quality & Governance Checks | `for check in infra/pipeline/*.py; do python3 "$check"; done` |
-| Security | `gosec ./...`, `govulncheck ./...`, `gitleaks git .`, `zizmor .` |
+| Security | `gosec ./...`, `govulncheck ./...`, `gitleaks git .`, `zizmor --pedantic .` |
 | CodeQL, Dependency Review | run by GitHub on the pull request |
 
 Security reports: see [SECURITY.md](SECURITY.md).

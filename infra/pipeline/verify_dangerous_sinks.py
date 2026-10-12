@@ -33,7 +33,7 @@ RULES = {
     ".ts": SCRIPT, ".tsx": SCRIPT, ".js": SCRIPT, ".mjs": SCRIPT, ".cjs": SCRIPT,
     ".py": [
         r"(?<![\w.])eval\s*\(", r"(?<![\w.])exec\s*\(", r"\bpickle\.loads?\b", r"\bmarshal\.loads?\b", r"\byaml\.load\s*\(",
-        r"\bsubprocess\b", r"\bos\.(?:system|popen)\s*\(", r"(?<![\w.])__import__\s*\(", r"\bmark_safe\s*\(", r"(?<![\w.])Markup\s*\(",
+        r"\bsubprocess\b", r"\bos\.(?:system|popen)\s*\(", r"(?<![\w.])__import__\s*\(", r"\bmark_safe\s*\(", r"(?<!class )(?<![\w.])Markup\s*\(",
     ],
     ".go": [
         r"\btemplate\.(?:HTML|HTMLAttr|JS|JSStr|CSS|URL|Srcset)\s*\(", r"\"os/exec\"", r"\"unsafe\"", r"\"text/template\"",

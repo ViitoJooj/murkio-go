@@ -44,10 +44,12 @@ jobs:
         with:
           persist-credentials: false
 
+      # The current releases of staticcheck and gosec cannot read what the Go
+      # 1.27.2 compiler exports, so they run on the previous Go until they can.
       - name: Set up Go
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: stable
+          go-version: "1.26"
           cache: false
 
       - name: Install staticcheck
